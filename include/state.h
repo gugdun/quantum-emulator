@@ -1,7 +1,7 @@
 #ifndef _STATE_H
 #define _STATE_H
 
-enum cpu_state
+enum CPU_state
 {
     READ_CMD,
     PARSE_CMD,
