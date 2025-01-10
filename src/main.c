@@ -65,7 +65,7 @@ void poll_events()
     while (SDL_PollEvent(&e))
     {
         if (e.type == SDL_QUIT)
-            CPU_set_state(CPU_HALT);
+            get_context()->running = false;
     }
 }
 
@@ -79,6 +79,7 @@ int main(int argc, char *argv[])
 #endif
     c->kernel_path = "kernel.bin";
     c->kernel_base = 0x1000;
+    c->running = true;
 
     if (parse_args(c, argc, argv)) return 1;
     if (setup_window(c)) return 1;
@@ -87,12 +88,13 @@ int main(int argc, char *argv[])
     CPU_reset(c->kernel_base);
     memset(m_get_framebuffer(), VID_RESET_COLOR, VID_PIXEL_COUNT);
 
-    while (CPU_get_state() != CPU_HALT)
+    while (c->running)
     {
         poll_events();
 
-        for (int i = 0; i < c->cycles_per_frame; i++)
-            CPU_cycle();
+        if (CPU_get_state() != CPU_HALT)
+            for (int i = 0; i < c->cycles_per_frame; i++)
+                CPU_cycle();
 
         glRasterPos2f(-1, 1);
         glPixelZoom(4, -4);

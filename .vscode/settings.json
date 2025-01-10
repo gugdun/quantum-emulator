@@ -5,6 +5,8 @@
         "stdlib.h": "c",
         "cpu.h": "c",
         "types.h": "c",
-        "string.h": "c"
+        "string.h": "c",
+        "stdio.h": "c",
+        "memory.h": "c"
     }
 }

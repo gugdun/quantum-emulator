@@ -21,7 +21,7 @@ static void CPU_CU()
     {
         case OP_JMP:
 #ifdef DEBUG
-			printf("JMP 0x%04X\n", a1);
+            printf("JMP 0x%04X\n", a1);
 #endif
             c.regs[PC] = a1;
             c.latency  = LATENCY;
@@ -29,7 +29,12 @@ static void CPU_CU()
 
         case OP_JL:
 #ifdef DEBUG
-			printf("JL R%d, R%d, 0x%04X\n", c.args[0] >> 4, c.args[0] & 0x0F, a2);
+            printf(
+                "JL R%d, R%d, 0x%04X\n",
+                (c.args[0] >> 4) + 1,
+                (c.args[0] & 0x0F) + 1,
+                a2
+            );
 #endif
             if (r1 < r2)
             {
@@ -40,7 +45,12 @@ static void CPU_CU()
         
         case OP_JLE:
 #ifdef DEBUG
-			printf("JLE R%d, R%d, 0x%04X\n", c.args[0] >> 4, c.args[0] & 0x0F, a2);
+            printf(
+                "JLE R%d, R%d, 0x%04X\n",
+                (c.args[0] >> 4) + 1,
+                (c.args[0] & 0x0F) + 1,
+                a2
+            );
 #endif
             if (r1 <= r2)
             {
@@ -51,9 +61,30 @@ static void CPU_CU()
 
         case OP_JE:
 #ifdef DEBUG
-			printf("JE R%d, R%d, 0x%04X\n", c.args[0] >> 4, c.args[0] & 0x0F, a2);
+            printf(
+                "JE R%d, R%d, 0x%04X\n",
+                (c.args[0] >> 4) + 1,
+                (c.args[0] & 0x0F) + 1,
+                a2
+            );
 #endif
             if (r1 == r2)
+            {
+                c.regs[PC] = a2;
+                c.latency  = LATENCY;
+            }
+            break;
+    
+        case OP_JNE:
+#ifdef DEBUG
+            printf(
+                "JNE R%d, R%d, 0x%04X\n",
+                (c.args[0] >> 4) + 1,
+                (c.args[0] & 0x0F) + 1,
+                a2
+            );
+#endif
+            if (r1 != r2)
             {
                 c.regs[PC] = a2;
                 c.latency  = LATENCY;
@@ -62,7 +93,12 @@ static void CPU_CU()
 
         case OP_JGE:
 #ifdef DEBUG
-			printf("JGE R%d, R%d, 0x%04X\n", c.args[0] >> 4, c.args[0] & 0x0F, a2);
+            printf(
+                "JGE R%d, R%d, 0x%04X\n",
+                (c.args[0] >> 4) + 1,
+                (c.args[0] & 0x0F) + 1,
+                a2
+            );
 #endif
             if (r1 >= r2)
             {
@@ -73,7 +109,12 @@ static void CPU_CU()
 
         case OP_JG:
 #ifdef DEBUG
-			printf("JG R%d, R%d, 0x%04X\n", c.args[0] >> 4, c.args[0] & 0x0F, a2);
+            printf(
+                "JG R%d, R%d, 0x%04X\n",
+                (c.args[0] >> 4) + 1,
+                (c.args[0] & 0x0F) + 1,
+                a2
+            );
 #endif
             if (r1 > r2)
             {
@@ -96,7 +137,11 @@ static void CPU_ALU()
     {
         case OP_ADD:
 #ifdef DEBUG
-			printf("ADD R%d, R%d\n", c.args[0] >> 4, c.args[0] & 0x0F);
+            printf(
+                "ADD R%d, R%d\n",
+                (c.args[0] >> 4) + 1,
+                (c.args[0] & 0x0F) + 1
+            );
 #endif
             c.regs[c.args[0] >> 4] += r2;
             if ((u32)r1 + (u32)r2 > 0xFFFF)
@@ -107,7 +152,11 @@ static void CPU_ALU()
         
         case OP_ADDS:
 #ifdef DEBUG
-			printf("ADDS R%d, R%d\n", c.args[0] >> 4, c.args[0] & 0x0F);
+            printf(
+                "ADDS R%d, R%d\n",
+                (c.args[0] >> 4) + 1,
+                (c.args[0] & 0x0F) + 1
+            );
 #endif
             c.regs[c.args[0] >> 4] = (u16)((s16)r1 + (s16)r2);
             if ((s32)r1 + (s32)r2 > 0x7FFF || (s32)r1 + (s32)r2 < -0x8000)
@@ -118,7 +167,11 @@ static void CPU_ALU()
 
         case OP_SUB:
 #ifdef DEBUG
-			printf("SUB R%d, R%d\n", c.args[0] >> 4, c.args[0] & 0x0F);
+            printf(
+                "SUB R%d, R%d\n",
+                (c.args[0] >> 4) + 1,
+                (c.args[0] & 0x0F) + 1
+            );
 #endif
             c.regs[c.args[0] >> 4] -= r2;
             if (r2 > r1) c.regs[CR] |= CARRY;
@@ -128,7 +181,11 @@ static void CPU_ALU()
         
         case OP_SUBS:
 #ifdef DEBUG
-			printf("SUBS R%d, R%d\n", c.args[0] >> 4, c.args[0] & 0x0F);
+            printf(
+                "SUBS R%d, R%d\n",
+                (c.args[0] >> 4) + 1,
+                (c.args[0] & 0x0F) + 1
+            );
 #endif
             c.regs[c.args[0] >> 4] = (u16)((s16)r1 - (s16)r2);
             if ((s32)r1 - (s32)r2 > 0x7FFF || (s32)r1 - (s32)r2 < -0x8000)
@@ -146,13 +203,17 @@ static void CPU_ALU()
                 c.latency = LATENCY - 1;
             }
             else if (--a.temp2 == 0)
-			{
+            {
 #ifdef DEBUG
-				printf("MUL R%d, R%d\n", c.args[0] >> 4, c.args[0] & 0x0F);
+                printf(
+                    "MUL R%d, R%d\n",
+                    (c.args[0] >> 4) + 1,
+                    (c.args[0] & 0x0F) + 1
+                );
 #endif
-				c.state = READ_CMD;
+                c.state = READ_CMD;
             }
-			else
+            else
             {
                 if ((u32)r1 + (u32)a.temp1 > 0xFFFF)
                     c.regs[CR] |= CARRY;
@@ -170,13 +231,17 @@ static void CPU_ALU()
                 c.latency = LATENCY - 1;
             }
             else if (--a.temp2 == 0)
-			{
+            {
 #ifdef DEBUG
-				printf("MULS R%d, R%d\n", c.args[0] >> 4, c.args[0] & 0x0F);
+                printf(
+                    "MULS R%d, R%d\n",
+                    (c.args[0] >> 4) + 1,
+                    (c.args[0] & 0x0F) + 1
+                );
 #endif
-				c.state = READ_CMD;
+                c.state = READ_CMD;
             }
-			else
+            else
             {
                 if ((s32)r1 + (s32)a.temp1 > 0x7FFF || (s32)r1 + (s32)a.temp1 < -0x8000)
                     c.regs[CR] |= CARRY;
@@ -195,7 +260,11 @@ static void CPU_ALU()
             else if (r2 > r1)
             {
 #ifdef DEBUG
-				printf("DIV R%d, R%d\n", c.args[0] >> 4, c.args[0] & 0x0F);
+                printf(
+                    "DIV R%d, R%d\n",
+                    (c.args[0] >> 4) + 1,
+                    (c.args[0] & 0x0F) + 1
+                );
 #endif
                 r1 = a.temp1;
                 c.state = READ_CMD;
@@ -220,7 +289,11 @@ static void CPU_ALU()
             else if (r2 > r1)
             {
 #ifdef DEBUG
-				printf("DIVS R%d, R%d\n", c.args[0] >> 4, c.args[0] & 0x0F);
+                printf(
+                    "DIVS R%d, R%d\n",
+                    (c.args[0] >> 4) + 1,
+                    (c.args[0] & 0x0F) + 1
+                );
 #endif
                 r1 = a.temp2 ? -a.temp1 : a.temp1;
                 c.state = READ_CMD;
@@ -240,13 +313,17 @@ static void CPU_ALU()
                 c.latency = LATENCY - 1;
             }
             else if (r2 > r1)
-			{
+            {
 #ifdef DEBUG
-				printf("MOD R%d, R%d\n", c.args[0] >> 4, c.args[0] & 0x0F);
+                printf(
+                    "MOD R%d, R%d\n",
+                    (c.args[0] >> 4) + 1,
+                    (c.args[0] & 0x0F) + 1
+                );
 #endif
-				c.state = READ_CMD;
+                c.state = READ_CMD;
             }
-			else
+            else
             {
                 c.regs[c.args[0] >> 4] -= r2;
                 if (c.latency > 0) c.latency--;
@@ -255,7 +332,7 @@ static void CPU_ALU()
         
         case OP_INV:
 #ifdef DEBUG
-			printf("INV R%d\n", c.args[0] >> 4);
+            printf("INV R%d\n", (c.args[0] >> 4) + 1);
 #endif
             c.regs[c.args[0] >> 4] = (u16)(-(s16)r1);
             c.latency = LATENCY - 1;
@@ -264,7 +341,11 @@ static void CPU_ALU()
 
         case OP_SHL:
 #ifdef DEBUG
-			printf("SHL R%d, R%d\n", c.args[0] >> 4, c.args[0] & 0x0F);
+            printf(
+                "SHL R%d, R%d\n",
+                (c.args[0] >> 4) + 1,
+                (c.args[0] & 0x0F) + 1
+            );
 #endif
             c.regs[c.args[0] >> 4] <<= r2;
             if (((u32)r1 << r2) > 0xFFFF)
@@ -275,7 +356,11 @@ static void CPU_ALU()
 
         case OP_SHR:
 #ifdef DEBUG
-			printf("SHR R%d, R%d\n", c.args[0] >> 4, c.args[0] & 0x0F);
+            printf(
+                "SHR R%d, R%d\n",
+                (c.args[0] >> 4) + 1,
+                (c.args[0] & 0x0F) + 1
+            );
 #endif
             c.regs[c.args[0] >> 4] >>= r2;
             if (r1 > 0 && (r1 >> r2) == 0)
@@ -286,7 +371,7 @@ static void CPU_ALU()
 
         case OP_NOT:
 #ifdef DEBUG
-			printf("NOT R%d\n", c.args[0] >> 4);
+            printf("NOT R%d\n", (c.args[0] >> 4) + 1);
 #endif
             c.regs[c.args[0] >> 4] = !r1;
             c.latency = LATENCY - 1;
@@ -295,7 +380,11 @@ static void CPU_ALU()
 
         case OP_AND:
 #ifdef DEBUG
-			printf("AND R%d, R%d\n", c.args[0] >> 4, c.args[0] & 0x0F);
+            printf(
+                "AND R%d, R%d\n",
+                (c.args[0] >> 4) + 1,
+                (c.args[0] & 0x0F) + 1
+            );
 #endif
             c.regs[c.args[0] >> 4] &= r2;
             c.latency = LATENCY - 1;
@@ -304,7 +393,11 @@ static void CPU_ALU()
         
         case OP_OR:
 #ifdef DEBUG
-			printf("OR R%d, R%d\n", c.args[0] >> 4, c.args[0] & 0x0F);
+            printf(
+                "OR R%d, R%d\n",
+                (c.args[0] >> 4) + 1,
+                (c.args[0] & 0x0F) + 1
+            );
 #endif
             c.regs[c.args[0] >> 4] |= r2;
             c.latency = LATENCY - 1;
@@ -313,7 +406,11 @@ static void CPU_ALU()
 
         case OP_XOR:
 #ifdef DEBUG
-			printf("XOR R%d, R%d\n", c.args[0] >> 4, c.args[0] & 0x0F);
+            printf(
+                "XOR R%d, R%d\n",
+                (c.args[0] >> 4) + 1,
+                (c.args[0] & 0x0F) + 1
+            );
 #endif
             c.regs[c.args[0] >> 4] ^= r2;
             c.latency = LATENCY - 1;
@@ -329,112 +426,242 @@ static void CPU_ALU()
 
 static void CPU_exec()
 {
-    switch (c.cmd & CMD_MASK)
+    if ((c.cmd & CMD_MASK) == CMD_MATH) CPU_ALU();
+    else if ((c.cmd & CMD_MASK) == CMD_JUMP) CPU_CU();
+    else if (c.cmd == CMD_LDB)
     {
-        case CMD_MATH:
-            CPU_ALU();
-            break;
-        
-        case CMD_JUMP:
-            CPU_CU();
-            break;
-        
-        case CMD_LOAD:
 #ifdef DEBUG
-			printf("LOAD R%d, [0x%02X%02X]\n", c.cmd & 0x0F, c.args[1], c.args[0]);
+        printf(
+            "LDB R%d, R%d (%04X)\n",
+            (c.args[0] >> 4) + 1,
+            (c.args[0] & 0x0F) + 1,
+            c.regs[c.args[0] & 0x0F]
+        );
 #endif
-            c.counter = 0;
-            c.latency = LATENCY;
-            c.state   = LOAD_DATA;
-            break;
-        
-        case CMD_LOADI:
+        c.cmd     = (c.cmd & 0xF0) + (c.args[0] >> 4);
+        c.args[1] = c.regs[c.args[0] & 0x0F] >> 8;
+        c.args[0] = c.regs[c.args[0] & 0x0F] & 0xFF;
+        c.argc    = 1;
+        c.counter = 0;
+        c.latency = LATENCY;
+        c.state   = LOAD_DATA;
+    }
+    else if (c.cmd == CMD_LDW)
+    {
 #ifdef DEBUG
-			printf("LD R%d, 0x%02X%02X\n", c.cmd & 0x0F, c.args[1], c.args[0]);
+        printf(
+            "LDW R%d, R%d (%04X)\n",
+            (c.args[0] >> 4) + 1,
+            (c.args[0] & 0x0F) + 1,
+            c.regs[c.args[0] & 0x0F]
+        );
 #endif
-            c.regs[c.cmd & 0x0F] = ((u16)c.args[1] << 8) + c.args[0];
-            c.latency = LATENCY - 1;
-            c.state   = READ_CMD;
-            break;
-        
-        case CMD_STORE:
+        c.cmd     = (c.cmd & 0xF0) + (c.args[0] >> 4);
+        c.args[1] = c.regs[c.args[0] & 0x0F] >> 8;
+        c.args[0] = c.regs[c.args[0] & 0x0F] & 0xFF;
+        c.argc    = 2;
+        c.counter = 0;
+        c.latency = LATENCY;
+        c.state   = LOAD_DATA;
+    }
+    else if (c.cmd == CMD_STB)
+    {
 #ifdef DEBUG
-			printf("ST R%d, 0x%02X%02X\n", c.cmd & 0x0F, c.args[1], c.args[0]);
+        printf(
+            "STB R%d, R%d\n",
+            (c.args[0] >> 4) + 1,
+            (c.args[0] & 0x0F) + 1
+        );
 #endif
-			c.counter = 0;
-            c.latency = LATENCY;
-            c.state   = STORE_DATA;
-            break;
-        
-        case CMD_PUSH:
+        c.cmd     = (c.cmd & 0xF0) + (c.args[0] >> 4);
+        c.args[1] = c.regs[c.args[0] & 0x0F] >> 8;
+        c.args[0] = c.regs[c.args[0] & 0x0F] & 0xFF;
+        c.argc    = 1;
+        c.counter = 0;
+        c.latency = LATENCY;
+        c.state   = STORE_DATA;
+    }
+    else if (c.cmd == CMD_STW)
+    {
 #ifdef DEBUG
-			printf("PUSH R%d\n", c.cmd & 0x0F);
+        printf(
+            "STW R%d, R%d\n",
+            (c.args[0] >> 4) + 1,
+            (c.args[0] & 0x0F) + 1
+        );
 #endif
-            c.args[0]   = c.regs[SP] & 0xFF;
-            c.args[1]   = c.regs[SP] >> 8;
-            c.regs[SP] += 2;
-			c.counter   = 0;
-            c.latency   = LATENCY;
-            c.state     = STORE_DATA;
-            break;
-
-        case CMD_POP:
+        c.cmd     = (c.cmd & 0xF0) + (c.args[0] >> 4);
+        c.args[1] = c.regs[c.args[0] & 0x0F] >> 8;
+        c.args[0] = c.regs[c.args[0] & 0x0F] & 0xFF;
+        c.argc    = 2;
+        c.counter = 0;
+        c.latency = LATENCY;
+        c.state   = STORE_DATA;
+    }
+    else if (c.cmd == CMD_MOV)
+    {
 #ifdef DEBUG
-			printf("POP R%d\n", c.cmd & 0x0F);
+        printf(
+            "MOV R%d, R%d\n",
+            (c.args[0] >> 4) + 1,
+            (c.args[0] & 0x0F) + 1
+        );
 #endif
-            c.regs[SP] -= 2;
-            c.args[0]   = c.regs[SP] & 0xFF;
-            c.args[1]   = c.regs[SP] >> 8;
-			c.counter   = 0;
-            c.latency   = LATENCY;
-            c.state     = LOAD_DATA;
-            break;
-        
-        case CMD_CALL:
-        case CMD_CALLI:
-            if ((c.cmd & CMD_MASK) == CMD_CALL)
-            {
+        c.regs[c.args[0] >> 4] = c.regs[c.args[0] & 0x0F];
+        c.latency = LATENCY - 1;
+        c.state   = READ_CMD;
+    }
+    else if (c.cmd == CMD_INT)
+    {
 #ifdef DEBUG
-				printf("CALL R%d\n", c.cmd & 0x0F);
+        printf("Interrupts are not implemented!\n");
 #endif
-                c.args[2] = c.cmd & 0x0F;
-            }
-            else
-            {
+        c.latency = LATENCY - 1;
+        c.state   = READ_CMD;
+    }
+    else if (c.cmd == CMD_CALLI)
+    {
 #ifdef DEBUG
-				printf("CALL 0x%02X%02X\n", c.args[1], c.args[0]);
+        printf("CALL 0x%02X%02X\n", c.args[1], c.args[0]);
 #endif
-                c.args[2] = c.args[0];
-                c.args[3] = c.args[1];
-            }
-            c.args[0]   = c.regs[SP] & 0xFF;
-            c.args[1]   = c.regs[SP] >> 8;
-            c.cmd       = (c.cmd & CMD_MASK) + PC;
-			c.counter   = 0;
-            c.latency   = LATENCY;
-            c.state     = STORE_DATA;
-            c.regs[SP] += 2;
-            break;
-
-        case CMD_MOV:
+        c.args[2]   = c.args[0];
+        c.args[3]   = c.args[1];
+        c.args[0]   = c.regs[SP] & 0xFF;
+        c.args[1]   = c.regs[SP] >> 8;
+        c.cmd       = (c.cmd & CMD_MASK) + PC;
+        c.counter   = 0;
+        c.argc      = 2;
+        c.latency   = LATENCY;
+        c.state     = STORE_DATA;
+        c.regs[SP] += 2;
+    }
+    else if ((c.cmd & CMD_MASK) == CMD_CALL)
+    {
 #ifdef DEBUG
-			printf("MOV R%d, R%d\n", c.args[0] >> 4, c.args[0] & 0x0F);
+        printf("CALL R%d\n", c.cmd & 0x0F);
 #endif
-            c.regs[c.args[0] >> 4] = c.regs[c.args[0] & 0x0F];
-            c.latency = LATENCY - 1;
-            c.state   = READ_CMD;
-            break;
-        
-        case CMD_INT:
+        c.args[2]   = c.cmd & 0x0F;
+        c.args[0]   = c.regs[SP] & 0xFF;
+        c.args[1]   = c.regs[SP] >> 8;
+        c.cmd       = (c.cmd & CMD_MASK) + PC;
+        c.counter   = 0;
+        c.argc      = 2;
+        c.latency   = LATENCY;
+        c.state     = STORE_DATA;
+        c.regs[SP] += 2;
+    }
+    else if ((c.cmd & CMD_MASK) == CMD_LDBA)
+    {
 #ifdef DEBUG
-            printf("Interrupts are not implemented!\n");
+        printf(
+            "LDB R%d, [0x%02X%02X]\n",
+            (c.cmd & 0x0F) + 1,
+            c.args[1],
+            c.args[0]
+        );
 #endif
-            c.latency = LATENCY - 1;
-            c.state   = READ_CMD;
-            break;
-        
-        default:
-            break;
+        c.argc    = 1;
+        c.counter = 0;
+        c.latency = LATENCY;
+        c.state   = LOAD_DATA;
+    }
+    else if ((c.cmd & CMD_MASK) == CMD_LDWA)
+    {
+#ifdef DEBUG
+        printf(
+            "LDW R%d, [0x%02X%02X]\n",
+            (c.cmd & 0x0F) + 1,
+            c.args[1],
+            c.args[0]
+        );
+#endif
+        c.argc    = 2;
+        c.counter = 0;
+        c.latency = LATENCY;
+        c.state   = LOAD_DATA;
+    }
+    else if ((c.cmd & CMD_MASK) == CMD_LDBI)
+    {
+#ifdef DEBUG
+        printf(
+            "LDB R%d, 0x%02X\n",
+            (c.cmd & 0x0F) + 1,
+            c.args[0]
+        );
+#endif
+        c.regs[c.cmd & 0x0F] = c.args[0];
+        c.latency = LATENCY - 1;
+        c.state   = READ_CMD;
+    }
+    else if ((c.cmd & CMD_MASK) == CMD_LDWI)
+    {
+#ifdef DEBUG
+        printf(
+            "LDW R%d, 0x%02X%02X\n",
+            (c.cmd & 0x0F) + 1,
+            c.args[1],
+            c.args[0]
+        );
+#endif
+        c.regs[c.cmd & 0x0F] = ((u16)c.args[1] << 8) + c.args[0];
+        c.latency = LATENCY - 1;
+        c.state   = READ_CMD;
+    }
+    else if ((c.cmd & CMD_MASK) == CMD_STBA)
+    {
+#ifdef DEBUG
+        printf(
+            "STB R%d, [0x%02X%02X]\n",
+            (c.cmd & 0x0F) + 1,
+            c.args[1],
+            c.args[0]
+        );
+#endif
+        c.argc    = 1;
+        c.counter = 0;
+        c.latency = LATENCY;
+        c.state   = STORE_DATA;
+    }
+    else if ((c.cmd & CMD_MASK) == CMD_STWA)
+    {
+#ifdef DEBUG
+        printf(
+            "STW R%d, [0x%02X%02X]\n",
+            (c.cmd & 0x0F) + 1,
+            c.args[1],
+            c.args[0]
+        );
+#endif
+        c.argc    = 2;
+        c.counter = 0;
+        c.latency = LATENCY;
+        c.state   = STORE_DATA;
+    }
+    else if ((c.cmd & CMD_MASK) == CMD_PUSH)
+    {
+#ifdef DEBUG
+        printf("PUSH R%d\n", (c.cmd & 0x0F) + 1);
+#endif
+        c.args[0]   = c.regs[SP] & 0xFF;
+        c.args[1]   = c.regs[SP] >> 8;
+        c.regs[SP] += 2;
+        c.counter   = 0;
+        c.argc      = 2;
+        c.latency   = LATENCY;
+        c.state     = STORE_DATA;
+    }
+    else if ((c.cmd & CMD_MASK) == CMD_POP)
+    {
+#ifdef DEBUG
+        printf("POP R%d\n", (c.cmd & 0x0F) + 1);
+#endif
+        c.regs[SP] -= 2;
+        c.args[0]   = c.regs[SP] & 0xFF;
+        c.args[1]   = c.regs[SP] >> 8;
+        c.counter   = 0;
+        c.argc      = 2;
+        c.latency   = LATENCY;
+        c.state     = LOAD_DATA;
     }
 }
 
@@ -443,7 +670,7 @@ static void CPU_parse()
     if (c.cmd == CMD_RET)
     {
 #ifdef DEBUG
-		printf("RET\n");
+        printf("RET\n");
 #endif
         c.regs[SP] -= 2;
         c.cmd     = PC;
@@ -451,19 +678,20 @@ static void CPU_parse()
         c.args[1] = c.regs[SP] >> 8;
         c.latency = LATENCY;
         c.counter = 0;
+        c.argc    = 2;
         c.state   = LOAD_DATA;
     }
     else if (c.cmd == CMD_HLT)
     {
 #ifdef DEBUG
-		printf("HLT\n");
+        printf("HLT\n");
 #endif
         c.state = CPU_HALT;
     }
     else if ((c.cmd & CMD_MASK) == CMD_INC)
     {
 #ifdef DEBUG
-		printf("INC R%d\n", c.cmd & 0x0F);
+        printf("INC R%d\n", (c.cmd & 0x0F) + 1);
 #endif
         c.regs[c.cmd & 0x0F]++;
         c.latency = LATENCY - 1;
@@ -472,15 +700,20 @@ static void CPU_parse()
     else if ((c.cmd & CMD_MASK) == CMD_DEC)
     {
 #ifdef DEBUG
-		printf("DEC R%d\n", c.cmd & 0x0F);
+        printf("DEC R%d\n", (c.cmd & 0x0F) + 1);
 #endif
         c.regs[c.cmd & 0x0F]--;
         c.latency = LATENCY - 1;
         c.state   = READ_CMD;
     }
     else if (((c.cmd & CMD_MASK) == CMD_MATH) ||
-             ((c.cmd & CMD_MASK) == CMD_MOV)  ||
-             (c.cmd == CMD_INT))
+             ((c.cmd & CMD_MASK) == CMD_LDBI) ||
+              (c.cmd == CMD_LDB) ||
+              (c.cmd == CMD_LDW) ||
+              (c.cmd == CMD_STB) ||
+              (c.cmd == CMD_STW) ||
+              (c.cmd == CMD_MOV) ||
+              (c.cmd == CMD_INT))
     {
         a.started = false;
         c.latency = LATENCY - 1;
@@ -495,10 +728,12 @@ static void CPU_parse()
         c.argc    = (c.cmd == CMD_JUMP) ? 2 : 3;
         c.state   = READ_ARGS;
     }
-    else if (((c.cmd & CMD_MASK) == CMD_LOAD)  ||
-             ((c.cmd & CMD_MASK) == CMD_LOADI) ||
-             ((c.cmd & CMD_MASK) == CMD_STORE) ||
-             ((c.cmd & CMD_MASK) == CMD_CALLI))
+    else if (((c.cmd & CMD_MASK) == CMD_LDBA) ||
+             ((c.cmd & CMD_MASK) == CMD_LDWA) ||
+             ((c.cmd & CMD_MASK) == CMD_LDWI) ||
+             ((c.cmd & CMD_MASK) == CMD_STBA) ||
+             ((c.cmd & CMD_MASK) == CMD_STWA) ||
+              (c.cmd == CMD_CALLI))
     {
         c.latency = LATENCY - 1;
         c.counter = 0;
@@ -514,7 +749,7 @@ static void CPU_parse()
     else
     {
 #ifdef DEBUG
-		printf("NOP\n");
+        printf("NOP\n");
 #endif
         c.latency = LATENCY - 1;
         c.state   = READ_CMD;
@@ -576,8 +811,8 @@ void CPU_cycle()
             }
             
             c.regs[c.cmd & 0x0F] = (c.counter == 0) ?
-                ((u16)m_read((((u16)c.args[1]) << 8) + c.args[0]) << 8) :
-                (c.regs[c.cmd & 0x0F] + m_read((((u16)c.args[1]) << 8) + c.args[0]));
+                m_read((((u16)c.args[1]) << 8) + c.args[0]) :
+                (((u16)m_read((((u16)c.args[1]) << 8) + c.args[0]) << 8) + c.regs[c.cmd & 0x0F]);
 
             if (c.args[0] == 0xFF)
             {
@@ -587,7 +822,7 @@ void CPU_cycle()
                 else c.args[1]++;
             } else c.args[0]++;
             
-            if (++c.counter == 2)
+            if (++c.counter == c.argc)
                 c.state = READ_CMD;
             c.latency = LATENCY;
             break;
@@ -614,9 +849,9 @@ void CPU_cycle()
                 else c.args[1]++;
             } else c.args[0]++;
             
-            if (++c.counter == 2)
+            if (++c.counter == c.argc)
             {
-                if ((c.cmd & CMD_MASK) == CMD_CALLI)
+                if (c.cmd == CMD_CALLI)
                     c.regs[PC] = ((u16)c.args[3] << 8) + c.args[2];
                 else if ((c.cmd & CMD_MASK) == CMD_CALL)
                     c.regs[PC] = c.regs[c.args[2] & 0x0F];

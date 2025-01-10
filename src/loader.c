@@ -16,8 +16,8 @@ void load_kernel(char *path, u16 base)
     while (1)
     {
         u8 data = 0;
-        fread(&data, sizeof(u8), 1, file);
-        if (feof(file)) break;
+        size_t c = fread(&data, sizeof(u8), 1, file);
+        if (!c || feof(file)) break;
 		*(mem + base + count) = data;
         count++;
     }
