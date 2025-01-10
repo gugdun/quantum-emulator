@@ -1,9 +1,16 @@
 CC			= gcc
 LD			= gcc
+
 CINCLUDES	= -Iinclude/
 CWARNINGS	= -Wall -Wextra
-CCFLAGS		= -ggdb $(CINCLUDES) $(CWARNINGS)
-LDFLAGS		= -lGL -lSDL2
+CCFLAGS		= -ggdb -DDEBUG $(CINCLUDES) $(CWARNINGS)
+
+ifeq ($(OS), Windows_NT)
+	LDFLAGS	= -lmingw32 -lopengl32 -lSDL2main -lSDL2
+else
+	LDFLAGS	= -lGL -lSDL2
+endif
+
 SOURCES		:= $(wildcard src/*.c)
 OBJECTS		:= $(patsubst src/%.c, obj/%.o, $(SOURCES))
 
