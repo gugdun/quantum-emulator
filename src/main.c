@@ -72,7 +72,11 @@ void poll_events()
 int main(int argc, char *argv[])
 {
     context *c = get_context();
-    c->cycles_per_frame = 1000000;
+#ifdef DEBUG
+    c->cycles_per_frame = 1;
+#else
+	c->cycles_per_frame = 1000000;
+#endif
     c->kernel_path = "kernel.bin";
     c->kernel_base = 0x1000;
 

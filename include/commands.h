@@ -16,5 +16,6 @@
 #define CMD_INC   0xB0
 #define CMD_DEC   0xC0
 #define CMD_HLT   0xFF
+#define CMD_MASK  0xF0
 
 #endif // _COMMANDS_H

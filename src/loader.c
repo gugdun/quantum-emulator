@@ -12,12 +12,13 @@ void load_kernel(char *path, u16 base)
     }
 
     size_t count = 0;
+	u8 *mem = m_get_ptr();
     while (1)
     {
         u8 data = 0;
         fread(&data, sizeof(u8), 1, file);
         if (feof(file)) break;
-        m_write(data, base + count);
+		*(mem + base + count) = data;
         count++;
     }
 
