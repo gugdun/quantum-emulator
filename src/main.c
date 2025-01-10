@@ -3,6 +3,7 @@
 #include <string.h>
 #include <emulator.h>
 #include <parser.h>
+#include <loader.h>
 #include <cpu.h>
 #include <memory.h>
 
@@ -72,19 +73,33 @@ int main(int argc, char *argv[])
 {
     context *c = get_context();
     c->cycles_per_frame = 1000000;
+    c->kernel_path = "kernel.bin";
+    c->kernel_base = 0x1000;
+
     if (parse_args(c, argc, argv)) return 1;
     if (setup_window(c)) return 1;
     
-    CPU_reset();
-    memset(m_get_framebuffer(), 0b11101101, 160 * 120);
+    load_kernel(c->kernel_path, c->kernel_base);
+    CPU_reset(c->kernel_base);
+    memset(m_get_framebuffer(), VID_RESET_COLOR, VID_PIXEL_COUNT);
 
     while (CPU_get_state() != CPU_HALT)
     {
         poll_events();
-        for (int i = 0; i < c->cycles_per_frame; i++) CPU_cycle();
+
+        for (int i = 0; i < c->cycles_per_frame; i++)
+            CPU_cycle();
+
         glRasterPos2f(-1, 1);
         glPixelZoom(4, -4);
-        glDrawPixels(160, 120, GL_RGB, GL_UNSIGNED_BYTE_3_3_2, m_get_framebuffer());
+        glDrawPixels(
+            VID_SCREEN_WIDTH,
+            VID_SCREEN_HEIGHT,
+            GL_RGB,
+            VID_PIXEL_FORMAT,
+            m_get_framebuffer()
+        );
+        
         SDL_GL_SwapWindow(c->wnd);
     }
 

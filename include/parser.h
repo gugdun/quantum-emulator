@@ -6,7 +6,9 @@
 enum parser_state
 {
     BLANK,
-    CYCLES
+    CYCLES_PER_FRAME,
+    KERNEL_PATH,
+    KERNEL_BASE
 };
 
 int parse_args(context *c, int argc, char *argv[]);

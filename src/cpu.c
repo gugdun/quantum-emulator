@@ -401,9 +401,9 @@ static void CPU_parse()
     }
 }
 
-void CPU_reset()
+void CPU_reset(u16 vector)
 {
-    c.regs[PC] = 0x1000;
+    c.regs[PC] = vector;
     c.latency  = LATENCY;
     c.state    = READ_CMD;
 }

@@ -16,7 +16,7 @@ typedef struct {
     u8 counter;
 } CPU;
 
-void CPU_reset();
+void CPU_reset(u16 vector);
 void CPU_cycle();
 void CPU_set_state(enum CPU_state new_state);
 enum CPU_state CPU_get_state();
