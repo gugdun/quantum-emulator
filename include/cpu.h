@@ -4,11 +4,16 @@
 #include <state.h>
 #include <types.h>
 
+#define LATENCY 1
+
 typedef struct {
     enum CPU_state state;
     u16 regs[16];
-    u8  args[5];
-    u8  counter;
+    u8 cmd;
+    u8 args[4];
+    u8 latency;
+    u8 argc;
+    u8 counter;
 } CPU;
 
 void CPU_reset();

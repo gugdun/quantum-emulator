@@ -5,12 +5,12 @@ static u8 m[51968];
 
 void m_write(u8 data, u16 addr)
 {
-    m[addr] = data;
+    m[addr % 51968] = data;
 }
 
 u8 m_read(u16 addr)
 {
-    return m[addr];
+    return m[addr % 51968];
 }
 
 void *m_get_framebuffer()
