@@ -514,10 +514,18 @@ static void CPU_exec()
     else if (c.cmd == CMD_INT)
     {
 #ifdef DEBUG
-        printf("Interrupts are not implemented!\n");
+        printf("INT 0x%02X\n", c.args[0]);
 #endif
-        c.latency = LATENCY - 1;
-        c.state   = READ_CMD;
+        c.args[4]   = c.cmd;
+        c.args[2]   = c.args[0];
+        c.args[0]   = c.regs[SP] & 0xFF;
+        c.args[1]   = c.regs[SP] >> 8;
+        c.cmd       = (c.cmd & CMD_MASK) + PC;
+        c.counter   = 0;
+        c.argc      = 2;
+        c.latency   = LATENCY;
+        c.state     = STORE_DATA;
+        c.regs[SP] += 2;
     }
     else if (c.cmd == CMD_CALLI)
     {
@@ -765,6 +773,13 @@ void CPU_reset(u16 vector)
 
 void CPU_cycle()
 {
+#ifdef DEBUG
+    // printf(
+    //     "STATE: %d, PC: %04X, CMD: %02X, ARGS: %02X %02X %02X %02X, LAT: %d, COUNT: %d\n",
+    //     c.state, c.regs[PC], c.cmd, c.args[0], c.args[1], c.args[2], c.args[3], c.latency, c.counter
+    // );
+#endif
+
     switch (c.state)
     {
         case READ_CMD:
@@ -851,7 +866,19 @@ void CPU_cycle()
             
             if (++c.counter == c.argc)
             {
-                if (c.cmd == CMD_CALLI)
+                if (c.args[4] == CMD_INT)
+                {
+                    c.cmd     = (c.cmd & 0xF0) + PC;
+                    c.args[0] = ((u16)c.args[2] << 1) & 0xFF;
+                    c.args[1] = ((u16)c.args[2] << 1) >> 8;
+                    c.args[4] = 0;
+                    c.counter = 0;
+                    c.argc    = 2;
+                    c.state   = LOAD_DATA;
+                    c.latency = LATENCY;
+                    break;
+                }
+                else if (c.cmd == CMD_CALLI)
                     c.regs[PC] = ((u16)c.args[3] << 8) + c.args[2];
                 else if ((c.cmd & CMD_MASK) == CMD_CALL)
                     c.regs[PC] = c.regs[c.args[2] & 0x0F];

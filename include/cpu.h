@@ -10,7 +10,7 @@ typedef struct {
     enum CPU_state state;
     u16 regs[16];
     u8 cmd;
-    u8 args[4];
+    u8 args[5];
     u8 latency;
     u8 argc;
     u8 counter;

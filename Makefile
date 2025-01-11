@@ -3,7 +3,7 @@ LD			= gcc
 
 CINCLUDES	= -Iinclude/
 CWARNINGS	= -Wall -Wextra
-CCFLAGS		= -O2 $(CINCLUDES) $(CWARNINGS)
+CCFLAGS		= -O2 -DDEBUG $(CINCLUDES) $(CWARNINGS)
 
 ifeq ($(OS), Windows_NT)
 	LDFLAGS	= -lmingw32 -lopengl32 -lSDL2main -lSDL2
