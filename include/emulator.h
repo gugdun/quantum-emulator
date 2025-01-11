@@ -9,6 +9,7 @@ typedef struct
 {
     SDL_Window *wnd;
     SDL_GLContext ctx;
+    bool help;
     bool running;
     int cycles_per_frame;
     char *kernel_path;

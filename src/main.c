@@ -3,6 +3,7 @@
 #include <string.h>
 #include <emulator.h>
 #include <parser.h>
+#include <help.h>
 #include <loader.h>
 #include <cpu.h>
 #include <memory.h>
@@ -80,8 +81,15 @@ int main(int argc, char *argv[])
     c->kernel_path = "kernel.bin";
     c->kernel_base = 0x1000;
     c->running = true;
+    c->help = false;
 
     if (parse_args(c, argc, argv)) return 1;
+    if (c->help)
+    {
+        print_help();
+        return 0;
+    }
+    
     if (setup_window(c)) return 1;
     
     load_kernel(c->kernel_path, c->kernel_base);

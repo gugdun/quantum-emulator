@@ -15,6 +15,8 @@ int parse_args(context *c, int argc, char *argv[])
                 else if (strcmp(argv[i], "--kernel") == 0) s = KERNEL_PATH;
                 else if (strcmp(argv[i], "-b") == 0) s = KERNEL_BASE;
                 else if (strcmp(argv[i], "--base") == 0) s = KERNEL_BASE;
+                else if (strcmp(argv[i], "-h") == 0) c->help = true;
+                else if (strcmp(argv[i], "--help") == 0) c->help = true;
                 else
                 {
                     printf("Unknown argument specified: %s\n", argv[i]);
