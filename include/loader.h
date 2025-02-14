@@ -1,8 +1,8 @@
 #ifndef _LOADER_H
 #define _LOADER_H
 
-#include <types.h>
+#include <stdint.h>
 
-void load_kernel(char *path, u16 base);
+void load_kernel(char *path, uint16_t base);
 
 #endif // _LOADER_H

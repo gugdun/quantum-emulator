@@ -3,7 +3,8 @@
 
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_opengl.h>
-#include <types.h>
+#include <stdint.h>
+#include <stdbool.h>
 
 typedef struct
 {
@@ -14,7 +15,7 @@ typedef struct
     bool running;
     int cycles_per_frame;
     char *kernel_path;
-    u16 kernel_base;
+    uint16_t kernel_base;
 } context;
 
 context *get_context();

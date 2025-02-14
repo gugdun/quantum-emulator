@@ -13,10 +13,10 @@ static ALU a;
 static void CPU_CU()
 {
     c.latency = LATENCY - 1;
-    u16 r1 = c.regs[c.args[0] >> 4];
-    u16 r2 = c.regs[c.args[0] & 0x0F];
-    u16 a1 = ((u16)c.args[1] << 8) + c.args[0];
-    u16 a2 = ((u16)c.args[2] << 8) + c.args[1];
+    uint16_t r1 = c.regs[c.args[0] >> 4];
+    uint16_t r2 = c.regs[c.args[0] & 0x0F];
+    uint16_t a1 = ((uint16_t)c.args[1] << 8) + c.args[0];
+    uint16_t a2 = ((uint16_t)c.args[2] << 8) + c.args[1];
     switch (c.cmd & 0x0F)
     {
         case OP_JMP:
@@ -131,8 +131,8 @@ static void CPU_CU()
 
 static void CPU_ALU()
 {
-    u16 r1 = c.regs[c.args[0] >> 4];
-    u16 r2 = c.regs[c.args[0] & 0x0F];
+    uint16_t r1 = c.regs[c.args[0] >> 4];
+    uint16_t r2 = c.regs[c.args[0] & 0x0F];
     switch (c.cmd & 0x0F)
     {
         case OP_ADD:
@@ -144,7 +144,7 @@ static void CPU_ALU()
             );
 #endif
             c.regs[c.args[0] >> 4] += r2;
-            if ((u32)r1 + (u32)r2 > 0xFFFF)
+            if ((uint32_t)r1 + (uint32_t)r2 > 0xFFFF)
                 c.regs[CR] |= CARRY;
             c.latency = LATENCY - 1;
             c.state   = READ_CMD;
@@ -158,8 +158,8 @@ static void CPU_ALU()
                 (c.args[0] & 0x0F) + 1
             );
 #endif
-            c.regs[c.args[0] >> 4] = (u16)((s16)r1 + (s16)r2);
-            if ((s32)r1 + (s32)r2 > 0x7FFF || (s32)r1 + (s32)r2 < -0x8000)
+            c.regs[c.args[0] >> 4] = (uint16_t)((int16_t)r1 + (int16_t)r2);
+            if ((int32_t)r1 + (int32_t)r2 > 0x7FFF || (int32_t)r1 + (int32_t)r2 < -0x8000)
                 c.regs[CR] |= CARRY;
             c.latency = LATENCY - 1;
             c.state   = READ_CMD;
@@ -187,8 +187,8 @@ static void CPU_ALU()
                 (c.args[0] & 0x0F) + 1
             );
 #endif
-            c.regs[c.args[0] >> 4] = (u16)((s16)r1 - (s16)r2);
-            if ((s32)r1 - (s32)r2 > 0x7FFF || (s32)r1 - (s32)r2 < -0x8000)
+            c.regs[c.args[0] >> 4] = (uint16_t)((int16_t)r1 - (int16_t)r2);
+            if ((int32_t)r1 - (int32_t)r2 > 0x7FFF || (int32_t)r1 - (int32_t)r2 < -0x8000)
                 c.regs[CR] |= CARRY;
             c.latency = LATENCY - 1;
             c.state   = READ_CMD;
@@ -215,7 +215,7 @@ static void CPU_ALU()
             }
             else
             {
-                if ((u32)r1 + (u32)a.temp1 > 0xFFFF)
+                if ((uint32_t)r1 + (uint32_t)a.temp1 > 0xFFFF)
                     c.regs[CR] |= CARRY;
                 c.regs[c.args[0] >> 4] += a.temp1;
                 if (c.latency > 0) c.latency--;
@@ -225,8 +225,8 @@ static void CPU_ALU()
         case OP_MULS:
             if (!a.started)
             {
-                a.temp1   = (s16)r2 < 0 ? -r1 : r1;
-                a.temp2   = (s16)r2 < 0 ? -r2 : r2;
+                a.temp1   = (int16_t)r2 < 0 ? -r1 : r1;
+                a.temp2   = (int16_t)r2 < 0 ? -r2 : r2;
                 a.started = true;
                 c.latency = LATENCY - 1;
             }
@@ -243,7 +243,7 @@ static void CPU_ALU()
             }
             else
             {
-                if ((s32)r1 + (s32)a.temp1 > 0x7FFF || (s32)r1 + (s32)a.temp1 < -0x8000)
+                if ((int32_t)r1 + (int32_t)a.temp1 > 0x7FFF || (int32_t)r1 + (int32_t)a.temp1 < -0x8000)
                     c.regs[CR] |= CARRY;
                 c.regs[c.args[0] >> 4] += a.temp1;
                 if (c.latency > 0) c.latency--;
@@ -281,7 +281,7 @@ static void CPU_ALU()
             if (!a.started)
             {
                 a.temp1   = 0;
-                a.temp2   = ((s16)r1 < 0 ? 1 : 0) ^ ((s16)r2 < 0 ? 1 : 0);
+                a.temp2   = ((int16_t)r1 < 0 ? 1 : 0) ^ ((int16_t)r2 < 0 ? 1 : 0);
                 a.started = true;
                 c.latency = LATENCY - 1;
                 if (a.temp2) c.regs[c.args[0] >> 4] = -c.regs[c.args[0] >> 4];
@@ -334,7 +334,7 @@ static void CPU_ALU()
 #ifdef DEBUG
             printf("INV R%d\n", (c.args[0] >> 4) + 1);
 #endif
-            c.regs[c.args[0] >> 4] = (u16)(-(s16)r1);
+            c.regs[c.args[0] >> 4] = (uint16_t)(-(int16_t)r1);
             c.latency = LATENCY - 1;
             c.state   = READ_CMD;
             break;
@@ -348,7 +348,7 @@ static void CPU_ALU()
             );
 #endif
             c.regs[c.args[0] >> 4] <<= r2;
-            if (((u32)r1 << r2) > 0xFFFF)
+            if (((uint32_t)r1 << r2) > 0xFFFF)
                 c.regs[CR] |= CARRY;
             c.latency = LATENCY - 1;
             c.state   = READ_CMD;
@@ -611,7 +611,7 @@ static void CPU_exec()
             c.args[0]
         );
 #endif
-        c.regs[c.cmd & 0x0F] = ((u16)c.args[1] << 8) + c.args[0];
+        c.regs[c.cmd & 0x0F] = ((uint16_t)c.args[1] << 8) + c.args[0];
         c.latency = LATENCY - 1;
         c.state   = READ_CMD;
     }
@@ -764,7 +764,7 @@ static void CPU_parse()
     }
 }
 
-void CPU_reset(u16 vector)
+void CPU_reset(uint16_t vector)
 {
     c.regs[PC] = vector;
     c.latency  = LATENCY;
@@ -826,8 +826,8 @@ void CPU_cycle()
             }
             
             c.regs[c.cmd & 0x0F] = (c.counter == 0) ?
-                m_read((((u16)c.args[1]) << 8) + c.args[0]) :
-                (((u16)m_read((((u16)c.args[1]) << 8) + c.args[0]) << 8) + c.regs[c.cmd & 0x0F]);
+                m_read((((uint16_t)c.args[1]) << 8) + c.args[0]) :
+                (((uint16_t)m_read((((uint16_t)c.args[1]) << 8) + c.args[0]) << 8) + c.regs[c.cmd & 0x0F]);
 
             if (c.args[0] == 0xFF)
             {
@@ -853,7 +853,7 @@ void CPU_cycle()
                 (c.counter == 0) ?
                     (c.regs[c.cmd & 0x0F] & 0xFF) :
                     (c.regs[c.cmd & 0x0F] >> 8),
-                (((u16)c.args[1]) << 8) + c.args[0]
+                (((uint16_t)c.args[1]) << 8) + c.args[0]
             );
 
             if (c.args[0] == 0xFF)
@@ -869,8 +869,8 @@ void CPU_cycle()
                 if (c.args[4] == CMD_INT)
                 {
                     c.cmd     = (c.cmd & 0xF0) + PC;
-                    c.args[0] = ((u16)c.args[2] << 1) & 0xFF;
-                    c.args[1] = ((u16)c.args[2] << 1) >> 8;
+                    c.args[0] = ((uint16_t)c.args[2] << 1) & 0xFF;
+                    c.args[1] = ((uint16_t)c.args[2] << 1) >> 8;
                     c.args[4] = 0;
                     c.counter = 0;
                     c.argc    = 2;
@@ -879,7 +879,7 @@ void CPU_cycle()
                     break;
                 }
                 else if (c.cmd == CMD_CALLI)
-                    c.regs[PC] = ((u16)c.args[3] << 8) + c.args[2];
+                    c.regs[PC] = ((uint16_t)c.args[3] << 8) + c.args[2];
                 else if ((c.cmd & CMD_MASK) == CMD_CALL)
                     c.regs[PC] = c.regs[c.args[2] & 0x0F];
                 c.state = READ_CMD;

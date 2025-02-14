@@ -42,7 +42,7 @@ int parse_args(context *c, int argc, char *argv[])
                 break;
             
             case KERNEL_BASE:
-                c->kernel_base = (u16)(strtoul(argv[i], (char **)NULL, 16) & 0xFFFF);
+                c->kernel_base = (uint16_t)(strtoul(argv[i], (char **)NULL, 16) & 0xFFFF);
                 if (c->kernel_base == 0)
                 {
                     printf("Bad kernel address specified\n");

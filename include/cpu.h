@@ -2,21 +2,21 @@
 #define _CPU_H
 
 #include <state.h>
-#include <types.h>
+#include <stdint.h>
 
 #define LATENCY 1
 
 typedef struct {
     enum CPU_state state;
-    u16 regs[16];
-    u8 cmd;
-    u8 args[5];
-    u8 latency;
-    u8 argc;
-    u8 counter;
+    uint16_t regs[16];
+    uint8_t cmd;
+    uint8_t args[5];
+    uint8_t latency;
+    uint8_t argc;
+    uint8_t counter;
 } CPU;
 
-void CPU_reset(u16 vector);
+void CPU_reset(uint16_t vector);
 void CPU_cycle();
 void CPU_set_state(enum CPU_state new_state);
 enum CPU_state CPU_get_state();

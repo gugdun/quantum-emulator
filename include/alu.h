@@ -1,12 +1,13 @@
 #ifndef _ALU_H
 #define _ALU_H
 
-#include <types.h>
+#include <stdint.h>
+#include <stdbool.h>
 
 typedef struct
 {
-    u16 temp1;
-    u16 temp2;
+    uint16_t temp1;
+    uint16_t temp2;
     bool started;
 } ALU;
 

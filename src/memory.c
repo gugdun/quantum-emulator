@@ -2,9 +2,9 @@
 #include <stddef.h>
 #include <stdio.h>
 
-static u8 m[TOTAL_MEMORY_SIZE];
+static uint8_t m[TOTAL_MEMORY_SIZE];
 
-void m_write(u8 data, u16 addr)
+void m_write(uint8_t data, uint16_t addr)
 {
     m[addr % TOTAL_MEMORY_SIZE] = data;
 #ifdef DEBUG
@@ -12,7 +12,7 @@ void m_write(u8 data, u16 addr)
 #endif
 }
 
-u8 m_read(u16 addr)
+uint8_t m_read(uint16_t addr)
 {
 #ifdef DEBUG
     // printf("m[%04X] => %02X\n", addr % TOTAL_MEMORY_SIZE, m[addr % TOTAL_MEMORY_SIZE]);
@@ -20,7 +20,7 @@ u8 m_read(u16 addr)
     return m[addr % TOTAL_MEMORY_SIZE];
 }
 
-u8 *m_get_ptr()
+uint8_t *m_get_ptr()
 {
     return m;
 }
