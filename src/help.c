@@ -1,4 +1,5 @@
 #include <help.h>
+#include <config.h>
 #include <stdio.h>
 
 void print_help()
@@ -9,3 +10,15 @@ void print_help()
     printf("  -k, --kernel  Specify custom kernel path.\n");
     printf("  -b, --base    Specify custom kernel base address.\n");
 }
+
+void print_version()
+{
+    printf(
+        "quark version %d.%d.%d by %s\n",
+        VERSION_MAJOR,
+        VERSION_MINOR,
+        VERSION_PATCH,
+        DEVELOPER
+    );
+}
+

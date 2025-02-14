@@ -82,8 +82,14 @@ int main(int argc, char *argv[])
     c->kernel_base = 0x1000;
     c->running = true;
     c->help = false;
+    c->version = false;
 
     if (parse_args(c, argc, argv)) return 1;
+    if (c->version)
+    {
+        print_version();
+        return 0;
+    }
     if (c->help)
     {
         print_help();
