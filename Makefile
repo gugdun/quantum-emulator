@@ -1,6 +1,10 @@
 CC			= gcc
 LD			= gcc
 
+SRC         = src
+OBJ         = obj
+BIN         = bin
+
 CINCLUDES	= -Iinclude/
 CWARNINGS	= -Wall -Wextra
 CCFLAGS		= -O2 -DDEBUG $(CINCLUDES) $(CWARNINGS)
@@ -11,21 +15,21 @@ else
 	LDFLAGS	= -lGL -lSDL2
 endif
 
-SOURCES		:= $(wildcard src/*.c)
-OBJECTS		:= $(patsubst src/%.c, obj/%.o, $(SOURCES))
+SOURCES		:= $(wildcard $(SRC)/*.c)
+OBJECTS		:= $(patsubst $(SRC)/%.c, $(OBJ)/%.o, $(SOURCES))
 
 all: $(OBJECTS)
-	@mkdir -p bin
+	@mkdir -p $(BIN)
 	@echo "Linking executable..."
-	@$(LD) $^ -o bin/quark $(LDFLAGS)
+	@$(LD) $^ -o $(BIN)/quark $(LDFLAGS)
 
 obj/%.o: src/%.c
-	@mkdir -p obj
+	@mkdir -p $(OBJ)
 	@echo "Compiling $<..."
 	@$(CC) $(CCFLAGS) -c $< -o $@
 
 clean:
 	@echo "Deleting binaries..."
-	@rm -f bin/*
+	@rm -f $(BIN)/*
 	@echo "Deleting objects..."
-	@rm -f obj/*
+	@rm -f $(OBJECTS)
